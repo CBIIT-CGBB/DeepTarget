@@ -1,0 +1,149 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+<!-- DeepTarget's second step is to provide each gene a likelihood score of being a secondary target of drug -->
+<!-- !Input!-->
+<!-- Description                       Object Name-->
+<!-- Viability matrix after CRISPR-KO ;onTarget$avana) -->
+<!-- Viability after Drug Treatment   ;onTarget$secondary_prism-->
+<!-- Expression profile               ;onTarget$expression_20Q4-->
+
+<!-- !Output!-->
+<!-- Add columns to 'KnownTarget_predictions' object  -->
+<!-- Score denoting the likelihood that a gene is a secondary targe of a drug (for all genes vs all drugs, ); drugVScrispr_corr_features_list_secondary -->
+
+<!-- Set the working Directory -->
+```{r, setup, include=FALSE}
+working_directory='/Users/sinhas8/Project_TrueTarget/'
+knitr::opts_knit$set(root.dir = working_directory)
+```
+<!-- Uncomment this chunk to make each files independelty run -->
+```{r}
+# knitr::knit('Step0B_Data_and_Libraries.Rmd')
+# knitr::knit('Step0_Write_Functions.Rmd')
+```
+<!-- Exploratory Analysis Part 1: The code below is performing an exploratory analysis on the data in the KnownTarget_predictions object to see whether drugs where the primary target is not expressed in most cell lines have a low Primary Target score. -->
+```{r}
+# First, the script adds BTK as a target manually, since this information is missing in the target annotation. 
+KnownTarget_predictions[grep('ibru',KnownTarget_predictions$drugName),]
+KnownTarget_predictions$MaxTargetName[grep('ibru',KnownTarget_predictions$drugName)][1]='BTK'
+# Then, it identifies cell lines where the primary target is expressed at a low level, by looking for cell lines where the expression level is less than 2. The cellLines_with_LowTarget variable stores the number of cell lines where each target has low expression.
+matched_cellLines = Reduce(intersect, 
+                         list(colnames(onTarget$expression),
+                              colnames(onTarget$avana_22Q2),
+                              colnames(onTarget$secondary_prism),
+                              colnames(onTarget$mutations_matrix)
+                              ))
+expression_matched = onTarget$expression[,matched_cellLines]
+avana_matched = onTarget$avana_22Q2[,matched_cellLines]
+drug_matched = onTarget$secondary_prism[,matched_cellLines]
+
+# Next, the script adds a new column to the KnownTarget_predictions object that stores the number of cell lines with low expression for each drug target.
+# Identify cell lines with low primary target expression
+cellLines_with_LowTarget = sapply(KnownTarget_predictions$MaxTargetName,
+                                function(x) 
+                                  err_handle(sum(expression_matched[x,]<2)) )
+# <!-- Only for drugs with targets with non-zero low expression cell lines can be used in the following analysis -->
+# <!-- Most of the drug targets are never zero expressed -->
+KnownTarget_predictions$cellLines_withLOWexp = cellLines_with_LowTarget
+KnownTarget_predictions$Maxcorr_Q=xtile(KnownTarget_predictions$Maxcorr, 2)
+KnownTarget_predictions$drugBroadID = onTarget$drugCategory$broad_id_trimmed[match(KnownTarget_predictions$drugName, onTarget$drugCategory$name)]
+
+# Finally, the script generates a boxplot that shows the distribution of cellLines_withLOWexp for each Maxcorr_Q quartile.
+ggplot(na.omit(KnownTarget_predictions), aes(y=cellLines_withLOWexp,
+                                    x=factor(Maxcorr_Q)))+
+  geom_boxplot()+
+  stat_compare_means()+
+  theme_bw(base_size = 20)
+```
+<!-- Exploratory Analysis Part 2: We first test drugs whose target KO and drug response viability similarity dimnishes when target expression is not expressed -->
+```{r}
+# <!-- Targets with low expression in at least five cell lines -->
+Targets_wd_lowExp_atLeast_FiveCellLines = KnownTarget_predictions$cellLines_withLOWexp > 5
+# <!-- Compute interaction -->
+# Compute interaction in all cases
+interaction_Features=lapply(1:nrow(KnownTarget_predictions), function(x)
+  {
+  infunc_drug_matched=err_handle(drug_matched[KnownTarget_predictions$drugBroadID[x],])
+  infunc_avana_matched=err_handle(avana_matched[KnownTarget_predictions$MaxTargetName[x],])
+  infunc_expression_matched=err_handle(expression_matched[KnownTarget_predictions$MaxTargetName[x],]<2)
+  err_handle(summary(lm(infunc_drug_matched ~ 
+                infunc_avana_matched*infunc_expression_matched))$coefficients[4,c(1,4)])
+  }
+  )
+names(interaction_Features)=KnownTarget_predictions$drugName
+# This is an interaction where the where cell lines with low expression (<2, Trues in above vector) will have "lower" correlation strength than cell lines with high expression (>2, Falses in above vector)
+KnownTarget_predictions$Whether_interaction=sapply(interaction_Features, function(x) x[1]<0 & x[2]<0.2 )
+KnownTarget_predictions$interaction_strength=sapply(interaction_Features, function(x) x[1])
+KnownTarget_predictions$interaction_P=sapply(interaction_Features, function(x) x[2])
+# <!-- Testing the Hypothesis: Drug targets that show interaction are predicted to be more likely to be the correct primary target from our pipeline -->
+drugVScrispr_corr_Strength_ranked=apply(drugVScrispr_corr_Strength, 2, function(x) nrow(drugVScrispr_corr_Strength)-rank(x)+1 )
+
+# KTP stands for "KnownTarget_predictions" matrix
+map_KTP_rankedMat=match(KnownTarget_predictions$drugBroadID, colnames(drugVScrispr_corr_Strength_ranked))
+KnownTarget_predictions$PredictedRank=sapply(1:length(map_KTP_rankedMat), function(x) 
+  err_handle(drugVScrispr_corr_Strength_ranked[KnownTarget_predictions$MaxTargetName[x],
+                                               map_KTP_rankedMat[x] ])  )
+ggplot(na.omit(KnownTarget_predictions),
+       aes(x=Whether_interaction, y=PredictedRank))+
+  geom_boxplot()+
+  stat_compare_means()+
+  theme_bw(base_size = 20)
+# saveRDS(KnownTarget_predictions, '../Data/KnownTarget_predictions.RDS')
+
+# <!-- Visualize for an example interaction(expression DKS score)-->
+drugCandidates_for_secTargets_ordered=drugCandidates_for_secTargets[order(drugCandidates_for_secTargets$interaction_strength),]
+candidate_drug_target_pair = drugCandidates_for_secTargets_ordered[17,]
+cand_drugName = candidate_drug_target_pair$drugName
+cand_Targetname = candidate_drug_target_pair$MaxTargetName
+cand_drugBroadID = candidate_drug_target_pair$drugBroadID
+# <!-- Variables from Step 2 -->
+infunc_drug_matched = err_handle(drug_matched[cand_drugBroadID,])
+infunc_avana_matched = err_handle(avana_matched[cand_Targetname,])
+infunc_expression_matched = err_handle(expression_matched[cand_Targetname,]<2)
+lm_model = lm(infunc_drug_matched ~
+                infunc_avana_matched*infunc_expression_matched)
+err_handle(summary(lm_model)$coefficients[4,c(1,4)])
+interact_plot(lm_model, pred = infunc_avana_matched, modx = infunc_expression_matched)
+```
+<!-- Part 2: Identify secondary targets -->
+
+<!-- # In the next step, we provide a score (secondary-DKS) for each gene to be a secondary target of a Drug. This is done by repeating the primary target identification process in cell lines where primary target is absent. This file is used for analysis of secondary target and figure 3 generation: "Figure_3_and supp_12_secondary_target_and_validation.RMD". -->
+```{r}
+all_genenames = rownames(onTarget$avana_22Q2)
+all_drugNames = rownames(onTarget$secondary_prism)
+drugSubset_map2_annotation <- match(rownames(onTarget$secondary_prism),
+                                    onTarget$drugCategory$broad_id_trimmed)
+all_drugNames_common = onTarget$drugCategory$name[drugSubset_map2_annotation]
+all_drugTargets = onTarget$drugCategory$target[drugSubset_map2_annotation]
+all_drugMOA = onTarget$drugCategory$moa[drugSubset_map2_annotation]
+# <!-- Find cell lines where Known Target is not expressed -->
+DrugTarget_wd_lowTargetCellLines = data.frame(drugname=all_drugNames,
+                                      TargetName=KnownTarget_predictions$MaxTargetName[match(all_drugNames, KnownTarget_predictions$drugBroadID)])
+Low_expression_cellLines = sapply(DrugTarget_wd_lowTargetCellLines$TargetName, function(x)
+  err_handle(names(which(onTarget$expression_20Q4[x,colnames(onTarget$expression_20Q4) %in% matched_cellLines]<3))))
+
+#! The commented version runs the code for all the drugs vs all the genes
+
+# drugVScrispr_corr_features_list_secondary = mclapply(1:nrow(DrugTarget_wd_lowTargetCellLines),
+#                                                      function(x) err_handle(correlation_bet_crispr_drug_secondary_target(
+#                                                        infunc_drugName = unlist(DrugTarget_wd_lowTargetCellLines[x,1]),
+#                                                        CellLines_withoutPrimary = Low_expression_cellLines[[unlist(DrugTarget_wd_lowTargetCellLines[x,2])]]
+#                                                      )) , mc.cores = detectCores())
+
+#! The below is a sample version running the code for 2 drugs vs all the genes
+N_examples=seq(2)
+drugVScrispr_corr_features_list_secondary = mclapply(N_examples,
+                                                     function(x) err_handle(correlation_bet_crispr_drug_secondary_target(
+                                                       infunc_drugName = unlist(DrugTarget_wd_lowTargetCellLines[x,1]),
+                                                       CellLines_withoutPrimary = Low_expression_cellLines[[unlist(DrugTarget_wd_lowTargetCellLines[x,2])]]
+                                                     )) , mc.cores = detectCores())
+names(drugVScrispr_corr_features_list_secondary) = DrugTarget_wd_lowTargetCellLines$drugname[N_examples]
+head(drugVScrispr_corr_features_list_secondary$A00077618)
+saveRDS(drugVScrispr_corr_features_list_secondary,
+        paste('Data/drugVScrispr_corr_features_list_secondary', Sys.Date(), '.RDS', sep=''))
+```
+
+

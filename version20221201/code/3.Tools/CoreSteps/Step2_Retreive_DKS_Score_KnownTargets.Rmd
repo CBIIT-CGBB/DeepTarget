@@ -1,0 +1,101 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+<!-- DeepTarget's second step is to provide a similarity score for Known Target of a drug; also provide a best Primary Target for each one. -->
+<!-- It takes the name of a drug as an input and returns a list containing the DKS score and P-value for the correlation between the drug and each gene. -->
+<!-- !Input!-->
+<!-- Description                       Object Name-->
+<!-- Correlation Btw viability profiles.; drugVScrispr_corr_features_list -->
+<!-- ..after CRISPR vs drug treatment                                       -->
+<!-- !Output!-->
+<!-- DeepTarget's score for Known Target ;KnownTarget_predictions  -->
+<!-- of the drug, Predicted Target                                 -->
+<!-- KnownTarget_predition object will be considerably used in our futher analysis and validation of our Pipeline. -->
+
+
+<!-- Set the working Directory -->
+```{r, setup, include=FALSE}
+working_directory='/Users/sinhas8/Project_TrueTarget/'
+knitr::opts_knit$set(root.dir = working_directory)
+```
+
+<!-- Uncomment this chunk to make each files independelty run -->
+```{r}
+# knitr::knit('Step0B_Data_and_Libraries.Rmd')
+# knitr::knit('Step0_Write_Functions.Rmd')
+```
+
+<!-- Finding commom drug target pair from avana and seconadary prism-->
+```{r}
+drugSubset_map2_annotation <- match(rownames(onTarget$secondary_prism), onTarget$drugCategory$broad_id_trimmed)
+all_drugNames_common = onTarget$drugCategory$name[drugSubset_map2_annotation]
+all_drugTargets = onTarget$drugCategory[drugSubset_map2_annotation,c('name','target')]
+all_drugMOA = onTarget$drugCategory$moa[drugSubset_map2_annotation]
+```
+
+<!-- Identify the known target DeepTarget's Score (Drug and KO Similarity Score - DKS Score) -->
+<!-- Description: calculating the known target DeepTarget's score (Drug and KO Similarity Score - DKS Score) for a given set of drugs and their corresponding targets. It is doing this by first splitting the target names for each drug, which are stored in the all_drugTargets data frame, using the str_split function. It then calculates the correlation between each drug and its targets using the drugVScrispr_corr_Strength variable, which contains the correlation between viability profiles after CRISPR knockouts and drug treatments. The code then identifies the maximum correlation for each drug and its target using the sapply function, and creates a data frame named KnownTarget_predictions that contains the drug name, the maximum target name, and the maximum correlation for each drug.  -->
+```{r}
+all_drugTargets_seperated = str_split(as.character(all_drugTargets$target), ", ")
+
+all_drugTargets_correlation=sapply(1:length(all_drugTargets_seperated),
+      function(x) {
+        ret_cor=drugVScrispr_corr_Strength[
+          match(all_drugTargets_seperated[[x]],
+                rownames(drugVScrispr_corr_Strength)), x]
+        names(ret_cor)=err_handle(all_drugTargets_seperated[[x]])
+        ret_cor
+        } )
+
+names(all_drugTargets_correlation) <- as.character(all_drugNames_common)
+all_drugTargets_correlation['dabrafenib']
+
+### Dataframe of the knowntarget_prediction
+all_drugTargets_MAXcorrelation=sapply(all_drugTargets_correlation, function(x) max(x, na.rm=T))
+all_drugTargets_MAXcorrGene=sapply(all_drugTargets_correlation,
+                                      function(x) names(which.max(x)))
+all_drugTargets_MAXcorrGene[sapply(all_drugTargets_MAXcorrGene, length)==0]=NA
+KnownTarget_predictions=data.frame(
+  drugName=names(all_drugTargets_MAXcorrelation),
+  MaxTargetName=unlist(all_drugTargets_MAXcorrGene),
+  Maxcorr=all_drugTargets_MAXcorrelation)
+KnownTarget_predictions=KnownTarget_predictions[order(KnownTarget_predictions$Maxcorr, decreasing = T),]
+KnownTarget_predictions$drugBroadID = onTarget$drugCategory$broad_id_trimmed[match(KnownTarget_predictions$drugName, onTarget$drugCategory$name)]
+```
+
+<!-- ## addition columns requred in the data curation of KnownTarget_predictions-->
+```{r}
+#best Hit name
+BestTargetName=apply(corrMat[,match(KnownTarget_predictions$drugBroadID, colnames(corrMat))],
+                                      2, function(x) rownames(corrMat)[which.max(x)] )
+BestTargetName[sapply(BestTargetName, length)==0]=NA
+KnownTarget_predictions$BestTargetName=unlist(BestTargetName)
+
+#best hit score
+BestTargetCorr=apply(corrMat[,match(KnownTarget_predictions$drugBroadID, colnames(corrMat))],
+                                      2, function(x) max(x, na.rm = T) )
+KnownTarget_predictions$BestTargetCorr=BestTargetCorr
+
+# Best Hit Significance
+KnownTarget_predictions$BestTargetCorrP = sapply(1:nrow(KnownTarget_predictions), function(x) 
+  err_handle(corrMat_P[KnownTarget_predictions[x,'BestTargetName'], KnownTarget_predictions[x,'drugBroadID']]) ) 
+
+# Known Target Significance
+KnownTarget_predictions$KnownTargetCorrP = sapply(1:nrow(KnownTarget_predictions), function(x) 
+  err_handle(corrMat_P[KnownTarget_predictions[x,'MaxTargetName'], KnownTarget_predictions[x,'drugBroadID']]) ) 
+
+corrMat_FDR=apply(corrMat_P, 2, function(x) fdrcorr(x))
+# Best Hit Significance - FDR corrected
+KnownTarget_predictions$BestTargetCorrFDR = sapply(1:nrow(KnownTarget_predictions), function(x) 
+  err_handle(corrMat_FDR[KnownTarget_predictions[x,'BestTargetName'], KnownTarget_predictions[x,'drugBroadID']]) ) 
+# Known Target Significance - FDR corrected
+KnownTarget_predictions$KnownTargetCorrFDR = sapply(1:nrow(KnownTarget_predictions), function(x) 
+  err_handle(corrMat_FDR[KnownTarget_predictions[x,'MaxTargetName'], KnownTarget_predictions[x,'drugBroadID']]) ) 
+
+saveRDS(KnownTarget_predictions, 
+        file = paste('Data/KnownTarget_predictions.RDS', Sys.Date(), '.RDS', sep=''))
+```
+

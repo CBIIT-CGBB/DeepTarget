@@ -1,0 +1,55 @@
+---
+title: "Primary Target at a pathway Level; Provides a score for each pathway to be the MOA of a drug"
+output: html_notebook
+---
+<!-- This script predicts a Primary Target at a pathwya Level. It next finds the pathways that are most enriched in the genes with high DKS scores. It does this by performing a pathway enrichment test on the ranked gene list by DKS score. The output is a matrix of pathway-level probabilities for each drug to be the primary MOA. This matrix can be used to further produce figures such as supplementary figures 3 and 5. -->
+
+<!-- !Input!-->
+<!-- Description                       Object Name-->
+<!-- Viability matrix after CRISPR-KO ;onTarget$avana) -->
+<!-- Viability after Drug Treatment   ;onTarget$secondary_prism-->
+<!-- !Output!-->
+<!-- Pathway level probability to be a primary MOA; gsea_enrichment_all_drugs -->
+
+<!-- Set the working Directory -->
+```{r, setup, include=FALSE}
+working_directory='/Users/sinhas8/Project_TrueTarget/'
+knitr::opts_knit$set(root.dir = working_directory)
+```
+
+<!-- Uncomment this chunk to make run this script independently run -->
+```{r}
+# knitr::knit('Step0B_Data_and_Libraries.Rmd')
+# knitr::knit('Step0_Write_Functions.Rmd')
+```
+
+<!-- MOA pathway annotation: The code above creates a list called moa_pathways, which contains the pathways that are associated with each MOA (mechanism of action) of a drug. The pathways are split by MOA and then the duplicates are removed. This list is then used in the next chunk of code to run gene enrichment tests on the pathways. -->
+```{r}
+target_by_moa=split(onTarget$drugCategory$target, onTarget$drugCategory$moa)
+target_by_moa_unlisted=sapply(target_by_moa, unlist)
+moa_pathways=lapply(target_by_moa_unlisted, function(y){
+  unique(unlist(sapply(as.character(y), function(x)
+    unlist(strsplit(x, ', ')) )))
+} )
+# saveRDS(moa_pathways,'data/moa_pathways.RDS')
+# <!-- Load pathway annotation data and perform the needed preprocessing -->
+moa_pathways=sapply(moa_pathways, na.omit)
+```
+<!-- Run gene enrichment (this will take around ~20 mins):: 
+This code is running gene enrichment analysis on drugVScrispr_corr_Strength, a matrix that contains the correlation strength between drugs and CRISPR knockouts. The analysis is performed using the fgsea function in the parallel package. The resulting gene enrichment scores for each drug are saved in the object gsea_enrichment_all_drugs, which is then saved to a file called 'data/gsea_enrichment_all_drugs.RDS'. This file can be used later to produce supplementary figures 3 and 5.-->
+```{r}
+gsea_enrichment_all_drugs=mclapply(1:ncol(drugVScrispr_corr_Strength), function(x) {
+  IF_corr_with_gene=unlist(drugVScrispr_corr_Strength[,x])
+  names(IF_corr_with_gene)  = rownames(drugVScrispr_corr_Strength)
+  IF_corr_with_gene_ordered=sort(IF_corr_with_gene, decreasing = T)
+  
+  gsea_enrichment=fgsea(pathways = moa_pathways,
+                        stats = IF_corr_with_gene_ordered,
+                        minSize=1,
+                        maxSize=100)
+  gsea_enrichment
+}, mc.cores = detectCores())
+
+names(gsea_enrichment_all_drugs)=colnames(drugVScrispr_corr_Strength)
+saveRDS(gsea_enrichment_all_drugs, 'data/gsea_enrichment_all_drugs.RDS')
+```

@@ -1,0 +1,58 @@
+---
+title: "Compute a correlation between the every gene crispr KO vs each drug response."
+output: html_document
+date: "2022-08-28"
+---
+<!-- DeepTarget's first step is to compute the correlations between the viability of cell lines after CRISPR knockout of each gene and the viability of the same cell lines after drug treatment. -->
+<!-- !Input!-->
+<!-- Description                       Object Name-->
+<!-- Viability matrix after CRISPR-KO ;onTarget$avana) -->
+<!-- Viability after Drug Treatment   ;onTarget$secondary_prism-->
+<!-- !Output!-->
+<!-- Correlation Btw viability profiles.; drugVScrispr_corr_features_list) -->
+<!-- ..after CRISPR vs drug treatment                                       -->
+
+<!-- Set the working Directory -->
+```{r, setup, include=FALSE}
+working_directory='/Users/sinhas8/Project_TrueTarget/'
+knitr::opts_knit$set(root.dir = working_directory)
+```
+
+<!-- Uncomment this chunk to make run this script independently run -->
+```{r}
+# knitr::knit('Step0B_Data_and_Libraries.Rmd')
+# knitr::knit('Step0_Write_Functions.Rmd')
+```
+<!-- The below piece of R code performs the following operations: -->
+
+<!-- Finds the common cell lines between two datasets, onTarget$avana_22Q2 and onTarget$secondary_prism and assigns the result to the variable common_cellLines. -->
+<!-- Extracts the names of all genes and drugs from the two datasets and assigns them to the variables all_genenames and all_drugNames respectively. -->
+<!-- Calls the mclapply function to run the correlation_bet_crispr_drug function on a sample of drugs and assigns the result to the drugVScrispr_corr_features_list variable. -->
+<!-- Saves the result to a file named "drugVScrispr_corr_features_list" followed by the current date and the ".RDS" file extension. -->
+<!-- It is worth noting that the code as written contains a commented out block that would run the correlation_bet_crispr_drug function on all drugs instead of just a sample. It also contains a commented out line that assigns the names of the drugs to the drugVScrispr_corr_features_list variable. -->
+```{r}
+# finding the commom cellines between the CRISPR and drug screen
+common_cellLines=intersect(colnames(onTarget$avana_22Q2),
+                           colnames(onTarget$secondary_prism))
+
+# extracting names of all drugs and genes
+all_genenames=rownames(onTarget$avana_22Q2)
+all_drugNames=rownames(onTarget$secondary_prism)
+
+# Running the function to find correlation between all crispr vs all drugs
+# drugVScrispr_corr_features_list=mclapply(all_drugNames,
+#                                          function(x) correlation_bet_crispr_drug(x), mc.cores = detectCores())
+# names(drugVScrispr_corr_features_list)=all_drugNames
+
+## Running the function to find correlation between all crispr vs 10 random drugs
+# Change the mc.cores - detectCores()
+sample_drugs=sample(all_drugNames, 2)
+drugVScrispr_corr_features_list=mclapply(sample_drugs,
+                                         function(x) correlation_bet_crispr_drug(x),
+                                         mc.cores = 2)
+names(drugVScrispr_corr_features_list)=sample_drugs
+
+saveRDS(drugVScrispr_corr_features_list,
+        file = paste('Data/drugVScrispr_corr_features_list', Sys.Date(), '.RDS', sep=''))
+```
+

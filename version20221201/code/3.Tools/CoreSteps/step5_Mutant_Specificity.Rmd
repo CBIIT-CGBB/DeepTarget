@@ -1,0 +1,61 @@
+---
+title: "DeepTarget Step 3: Mutation Specificity of a drug to its known target."
+output: html_notebook
+---
+
+<!-- Here, we compute the Mutant Specificity Score (MS Score) of a drug to its known target: We reason that if a drug more specifically targets a mutant form of protein, in the cell lines with this mutant form, the similarity between viability after drug treatment and target CRISPR-KO (their DKS score) would be significantly higher than in the cell lines with WT protein. We mathematically model this dependency of the DKS score on the mutation status of the target by employing a regression between the drug and the target’s response across the cell lines, including the mutation status as an interaction term. We call this score the mutant-specificity score (this composes the second output of DeepTarget), where a positive mutant-specificity score indicates that a drug differentially targets the mutant form of the target protein more than WT and vice-versa for the negative score.-->
+
+<!-- Set the working Directory -->
+```{r, setup, include=FALSE}
+working_directory='/Users/sinhas8/Project_TrueTarget/'
+knitr::opts_knit$set(root.dir = working_directory)
+```
+
+<!-- Matched cellinies to between the crispr, drug and mutation matrix datasets -->
+```{r}
+matched_cellLines = Reduce(intersect, 
+                           list(colnames(onTarget$avana_22Q2),
+                                colnames(onTarget$secondary_prism),
+                                colnames(onTarget$mutations_matrix)
+                           ))
+avana_matched = onTarget$avana_22Q2[,matched_cellLines]
+drug_matched = onTarget$secondary_prism[,matched_cellLines]
+mutation_matched=onTarget$mutations_matrix[,matched_cellLines]
+```
+<!-- Mutation Specificity Score: Compute interaction between the mutation and the correlation of CRISPR KO and drug response-->
+```{r}
+# Compute interaction in all cases
+interaction_Features=lapply(1:nrow(KnownTarget_predictions), function(x)
+{
+  infunc_drug_matched=err_handle(drug_matched[KnownTarget_predictions$drugBroadID[x],])
+  infunc_avana_matched=err_handle(avana_matched[KnownTarget_predictions$MaxTargetName[x],])
+  infunc_mutation_matched=err_handle(mutation_matched[KnownTarget_predictions$MaxTargetName[x],])
+  err_handle(summary(lm(infunc_drug_matched ~ 
+                          infunc_avana_matched*infunc_mutation_matched))$coefficients[4,c(1,4)])
+}
+)
+names(interaction_Features)=KnownTarget_predictions$drugName
+Target_Mutation_specificity=data.frame(mutation_interaction_strength=sapply(interaction_Features, function(x) x[1]),
+                                       mutation_interaction_P=sapply(interaction_Features, function(x) x[2]))
+Target_Mutation_specificity=cbind(KnownTarget_predictions[,1:2], Target_Mutation_specificity)
+saveRDS(Target_Mutation_specificity,
+        file=paste('Data/Target_Mutation_specificity.RDS', Sys.Date(), '.RDS', sep=''))
+```
+
+<!-- The above code performs the following steps: -->
+<!-- It extracts the interaction strength and p-value for the relationship between drug response and CRISPR knockout of the known target for each drug, using the lm() function to fit a linear model with an interaction term. -->
+<!-- It creates a new data frame called Target_Mutation_specificity that contains the interaction strength and p-value for each drug. -->
+<!-- It adds a new column called predicted_resistance_mutation to the KnownTarget_predictions data frame, which is a binary variable indicating whether there is a significant interaction between the mutation status of the target and the drug response (i.e. whether the drug differentially targets the mutant form of the protein). -->
+<!-- It adds a new column called drugCategory to the KnownTarget_predictions data frame, which indicates the category of the drug (e.g. "antiproliferative"). -->
+<!-- It saves the updated KnownTarget_predictions data frame to a file. -->
+```{r}
+KnownTarget_predictions$mutation_interaction_strength=sapply(interaction_Features, function(x) x[1])
+KnownTarget_predictions$mutation_interaction_P=sapply(interaction_Features, function(x) x[2])
+# whether there is mutation interaction or not based on a significance threshold
+KnownTarget_predictions$predicted_resistance_mutation = KnownTarget_predictions$mutation_interaction_P<0.1
+# Add category of drug Description
+KnownTarget_predictions$drugCategory = onTarget$drugCategory$drug_category[match(KnownTarget_predictions$drugName, onTarget$drugCategory$name)]
+
+saveRDS(KnownTarget_predictions,
+        file=paste('Data/KnownTarget_predictions.RDS', Sys.Date(), '.RDS', sep=''))
+```
