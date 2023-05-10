@@ -2,10 +2,10 @@
 \alias{colorBar}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-create a key bar for a plot
+Create a color key bar.
 }
 \description{
-create a key bar for a plot
+Utility method to create a color key bar for a plot.
 }
 \usage{
 colorBar(xl, yb, xr, yt, v.min, v.max, col.l, alpha = 1, color.spec = "hsv", title = "")
@@ -28,7 +28,7 @@ y, top
 mininum value
 }
   \item{v.max}{
-max value
+maximum value
 }
   \item{col.l}{
 %%     ~~Describe \code{col.l} here~~
@@ -40,7 +40,7 @@ max value
 %%     ~~Describe \code{color.spec} here~~
 }
   \item{title}{
-%%     ~~Describe \code{title} here~~
+Color bar title
 }
 }
 \details{
@@ -108,8 +108,8 @@ function (xl, yb, xr, yt, v.min, v.max, col.l, alpha = 1, color.spec = "hsv",
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory (show via RShowDoc("KEYWORDS")):
-% \keyword{ ~kwd1 }
-% \keyword{ ~kwd2 }
+\keyword{ aplot }
+\keyword{ color }
 % Use only one keyword per line.
 % For non-standard keywords, use \concept instead of \keyword:
 % \concept{ ~cpt1 }
