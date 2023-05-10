@@ -1,17 +1,17 @@
-## this is used to pull out the gene that has the max corelation with the treated drug.
+## This is used to pull out the gene that has the max correlation with the drug of interest.
 
 PredMaxSim <- function( Sim.GES.DRS=Sim.GES.DRS, D.M = Drug.Metadata){
     Drug.Id.i <- match(names(Sim.GES.DRS), D.M[,1])
     D.M.f <- D.M[Drug.Id.i,]
-    ## based on the name of the drug.
+    ## Based on the name of the drug:
     Splt.targets = str_split(as.character(D.M.f[,3]), ", ")
-    ## this is extract P val, and cor values and turn to the matrix where genes are rows and drugs are column.
+    ## This is extracts P values and correlation values, and turns them into a matrix where the genes are rows and the drugs are columns.
     corrMatPval=sapply(Sim.GES.DRS, function(x) x[,1])
     corrMat=sapply(Sim.GES.DRS, function(x) x[,2])
-    ## calculate FDR.
+    ## Calculate false discovery rate (FDR).
     corrMatFDR=sapply(Sim.GES.DRS, function(x) x[,3])
 ##############
-    ## if there is one drug.
+    ## If there is one drug:
     if ( nrow(D.M.f)==1){
         BestTargetGene=rownames(corrMat)[which.max(corrMat[,1])]
         BestTargetCorr = max(corrMat[,1],na.rm = T)
@@ -30,7 +30,7 @@ Pred.sim=data.frame(
     BestTargetGene=unlist(BestTargetGene),
     BestTargetCorr=BestTargetCorr)
 
-# map to get the P val from best target gene
+# Map to get the P value from gene that is the best target.
 Pred.sim$BestTargetCorrP = sapply(1:nrow(Pred.sim), function(x)
     errHandle(corrMatPval[Pred.sim[x,'BestTargetGene'], Pred.sim[x,1]]) )
 # Best Hit Significance - FDR corrected
