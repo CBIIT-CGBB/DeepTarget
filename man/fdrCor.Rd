@@ -2,10 +2,10 @@
 \alias{fdrCor}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
- Calculate FDR
+ Calculate False Discovery Rate (FDR)
 }
 \description{
- this function is used to calculate for FDR based on the list of P val.
+This function is used to calculate for FDR based on the list of p values.
 }
 \usage{
  fdrCor(test_list)
@@ -13,7 +13,7 @@
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{test_list}{
-%%     ~~Describe \code{test_list} here~~
+A list of p values.
 }
 }
 \details{
@@ -30,7 +30,7 @@
 %% ~put references to the literature/web site here ~
 }
 \author{
-%%  ~~who you are~~
+sanjusinha7
 }
 \note{
 %%  ~~further notes~~
@@ -42,10 +42,6 @@
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
 ## The function is currently defined as
 function (test_list)
 {
@@ -54,8 +50,9 @@ function (test_list)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory (show via RShowDoc("KEYWORDS")):
-% \keyword{ ~kwd1 }
-% \keyword{ ~kwd2 }
+\keyword{ utilities }
+\keyword{ internal }
+\keyword{ htest }
 % Use only one keyword per line.
 % For non-standard keywords, use \concept instead of \keyword:
 % \concept{ ~cpt1 }
