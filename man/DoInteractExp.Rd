@@ -2,25 +2,30 @@
 \alias{DoInteractExp}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Compute interaction between the drug and KO expression in term of lower vs higher expression
+Compute the interaction between the drug and KO expression
 }
 \description{
-Compute interaction between the drug and KO expression in term of lower vs higher expression
+Computes the interaction between the drug and KO expression in terms of lower vs higher expression
 }
 \usage{
-DoInteractExp(Predtargets=Drug.sim,Exp=Exp,DRS=DRS, GES=GES,CutOff = 3)
+DoInteractExp(Predtargets = Drug.sim, Exp = Exp, DRS = DRS, GES = GES, CutOff = 3)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
- \item{Predtargets}{a table of drug information and their most targeted gene with stats of correlation}
+ \item{Predtargets}{
+  A table of drug information and their most targeted gene with stats of correlation}
 
-\item{Exp}{Expression matrix}
+\item{Exp}{
+ Expression matrix}
 
-\item{DRS}{Drug scores}
+\item{DRS}{
+ Drug scores}
 
-\item{GES}{Gene effect scores from KO method}
+\item{GES}{
+ Gene effect scores from KO method}
 
-\item{CutOff}{desired cut-off for low expression}
+\item{CutOff}{
+ desired cut-off for low expression}
 }
 \details{
 %%  ~~ If necessary, more details than the description above ~~
@@ -58,3 +63,4 @@ DrugTargetSim <- PredTarget(sim, D.M = Meta.data)
 d.expr <- OntargetM$expression_20Q4
 ExpInteract <- DoInteractExp (DrugTargetSim,d.expr,sec.prism,KO.GES,CutOff = 2)
 }
+\keyword{ manip }
