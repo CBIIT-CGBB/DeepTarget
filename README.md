@@ -9,7 +9,7 @@ Full artice (preprint): https://www.biorxiv.org/content/biorxiv/early/2022/10/19
 install.packages("devtools")
 ## Call devtools
 library(devtools)
-## Install Deeptarget from the GitHub
+## Install DeepTarget from the GitHub
 devtools::install_github("CBIIT-CGBB/DeepTarget")
 
 
