@@ -3,14 +3,14 @@
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 
-plotting for Drug target response for mutant and non-mutant group.
+Plot of drug target response for mutant and non-mutant groups.
 }
 \description{
 
-plotting for Drug target response for primary or secondary based on drug of interest.
+Generates a plot of Drug target response for primary or secondary targets based on a drug of interest.
 }
 \usage{
-DMB(DN = Drugname, GN=GOI, Pred = Pred, Mutant = Mutant, DRS = DRS, GES = GES, plot = TRUE)
+DMB(DN = Drugname, GN = GOI, Pred = Pred, Mutant = Mutant, DRS = DRS, GES = GES, plot = TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -78,8 +78,8 @@ DMB (DN=DOI,GN=GOI,Pred=Pred.d,Mutant=d.mt,DRS= sec.prism,GES= KO.GES)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory (show via RShowDoc("KEYWORDS")):
-% \keyword{ ~kwd1 }
-% \keyword{ ~kwd2 }
+\keyword{ aplot }
+\keyword{ regression }
 % Use only one keyword per line.
 % For non-standard keywords, use \concept instead of \keyword:
 % \concept{ ~cpt1 }
