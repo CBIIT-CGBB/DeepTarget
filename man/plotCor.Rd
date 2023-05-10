@@ -18,7 +18,7 @@ Drug Name
 Gene Name
 }
   \item{Pred}{
-Output from prediction object
+Output object from the prediction method
 }
   \item{DRS}{
 Drug response score
@@ -27,7 +27,7 @@ Drug response score
 Gene Effect scores
 }
   \item{plot}{
-%%     ~~Describe \code{plot} here~~
+Whether to generate the plot, defaults to True
 }
 }
 \details{
@@ -40,7 +40,7 @@ Correlation plot
 %% ~put references to the literature/web site here ~
 }
 \author{
-%%  ~~who you are~~
+sanjusinha7
 }
 \note{
 %%  ~~further notes~~
@@ -70,3 +70,4 @@ GOI ='BTK'
 plotCor ( DN=DOI,GN=GOI,Pred=Pred.d, DRS= sec.prism,GES= KO.GES)
 }
 
+\keyword{ aplot }
