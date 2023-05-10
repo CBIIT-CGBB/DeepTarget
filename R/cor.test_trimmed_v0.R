@@ -1,4 +1,4 @@
-## this function is called by another main function.
+## This function is a utility function called by another main function.
 cor.test_trimmed_v0 <- function(x, ...) UseMethod("cor.test_trimmed_v0")
 
 #' cor.test_trimmed_v0.default
