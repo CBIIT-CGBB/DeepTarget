@@ -2,10 +2,10 @@
 \alias{plotSim}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Plot the similarty between corelation values and P val;
+Plot the similarty between corelation values and P values;
 }
 \description{
-Plot the similarty between corelation values and P val;
+Generates a plot of the similarty between corelation values and P values;
 }
 \usage{
 plotSim(dx = d.Pval, dy = d.corr, clr = NULL, plot = TRUE)
@@ -13,16 +13,16 @@ plotSim(dx = d.Pval, dy = d.corr, clr = NULL, plot = TRUE)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{dx}{
-a matrix of p vals
+A matrix of p values
 }
   \item{dy}{
-a matrix of correlation vals
+A matrix of correlation values
 }
   \item{clr}{
 Desired color
 }
   \item{plot}{
-%%     ~~Describe \code{plot} here~~
+Whether to generate the plot, defaults to True.
 }
 }
 \details{
@@ -67,5 +67,6 @@ par(mar=c(4,4,5,2), xpd=TRUE, mfrow=c(1,1));
 color <- colorRampPalette(c("lightblue",'darkblue'));
 plotSim(dx=Pval,dy=cor,clr=color);
 dev.off()
-
 }
+            
+\keyword{ aplot }
