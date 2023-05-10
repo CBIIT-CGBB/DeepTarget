@@ -2,11 +2,11 @@
 \alias{OntargetM}
 \docType{data}
 \title{
- an object containing data to be used in DeepTarget pipeline.
+ An object containing data to be used in DeepTarget operations.
 
 }
 \description{
-an object containing Viability matrix after CRISPR-KO; Viability after Drug Treatment; Drug metadata from Broad, mutation matrix, and expression matrix with common celllines and common drugs.
+An object containing martices for: Viability after CRISPR-KO; Viability after Drug Treatment; Drug metadata from Broad; mutations ; and expression with common cell lines and common drugs.
 }
 \usage{data("OntargetM")}
 \format{
@@ -24,14 +24,16 @@ an object containing Viability matrix after CRISPR-KO; Viability after Drug Trea
 }
 \source{
 DrugMetadata
-depmap \url{ https://depmap.org/repurposing/#:~:text=Corsello_supplemental_tables.xlsx}
+depmap \url{ https://depmap.org/portal/download/all/?releasename=DepMap+Public+23Q2&filename=Model.csv}
+
 Secondary prism
 depmap \url{https://depmap.org/portal/download/all/?releasename=PRISM+Repurposing+19Q4&filename=secondary-screen-dose-response-curve-parameters.csv}
+
 avana_CRISPR
 depmap \url{https://depmap.org/portal/download/all/?releasename=DepMap+Public+22Q4&filename=CRISPRGeneEffect.csv}
+
 mutations_mat
 Mutation binary profile for ~2K cell lines; 0 is WT; 1 is mutated
-
 depmap \url{https://depmap.org/portal/download/all/?releasename=DepMap+Public+22Q4&filename=OmicsSomaticMutations.csv}
 
 expression_20Q4
@@ -40,7 +42,7 @@ depmap \url{https://depmap.org/portal/download/all/}
 
 }
 \references{
-%%  ~~ possibly secondary sources and usages ~~
+All files can be acquired from depmap \url{https://depmap.org/portal/download/all/}
 }
 \examples{
 data(OntargetM)
