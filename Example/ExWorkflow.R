@@ -1,18 +1,18 @@
-## this is the example script if the data contains multiple assays for a drug.
+## This is an example script for the package. It assumes that the data can contain multiple assays for the same drug.
 rm(list=ls());
 library(rstudioapi)
 current_path <- getActiveDocumentContext()$path
 setwd(dirname(current_path ))
 library ( DeepTarget)
 data ("OntargetM")
-### drug in the paper.
-## cna't locate the drug named GSK2830371 as the figure 5G.
+### Drugs used in the paper.
+## can't locate the drug named GSK2830371 as the figure 5G.
 
 drug.name <- c('atiprimod','AMG-232','pitavastatin','Ro-4987655','alexidine','RGFP966','dabrafenib','olaparib','CGM097','ibrutinib','palbociclib')
 length(drug.name)
-## get the id,
+## Get the Drug ID
 S.Drug <- OntargetM$DrugMetadata$broad_id_trimmed [which (OntargetM$DrugMetadata$name %in% drug.name)]
-## each of this drug has two assay.
+## Each of these drugs has two assays.
 ########
 ### this
 length(S.Drug)
@@ -20,13 +20,13 @@ length(S.Drug)
 sec.prism.f <- OntargetM$secondary_prism[which ( row.names(OntargetM$secondary_prism) %in% S.Drug), ]
 dim(sec.prism.f)
 ## 16
-## some drugs has multiple assays.
+## Some of these drugs have multiple assays.
 
 head(sec.prism.f)
 KO.GES <- OntargetM$avana_CRISPR
 dim(KO.GES)
 dim(sec.prism.f)
-## calculate the similarity between these assays with KO method.
+## Calculate the similarity between these assays using the KO method.
 List.sim <- NULL;
 for ( i in 1:nrow(sec.prism.f)){
     DRS=as.data.frame(sec.prism.f[i,])
@@ -44,55 +44,55 @@ saveRDS(List.sim,
 length(List.sim)
 ####
 metadata <- OntargetM$DrugMetadata
-## get the similarity for known targeted gene from the drug ( if there are multiple targeted genes, get the most similarity)
+## Get the similarity for known gene targets from the drug (if there are multiple targeted genes, get the most similar gene)
 DrugTargetSim <- PredTarget(Sim.GES.DRS=List.sim, D.M = metadata)
-## get the similarity for the gene havnig the most similarty with the drug treatment.
+## Get the similarity for the gene which is most similar to the drug treatment.
 DrugGeneMaxSim <- PredMaxSim(Sim.GES.DRS=List.sim, D.M = metadata)
-## mutant interaction and expression interaction with the known targeted gene.
+## Mutant interaction and expression interaction with the known targeted gene.
 d.mt <- OntargetM$mutations_mat
 d.expr <- OntargetM$expression_20Q4
 out.MutantTarget <- NULL;
 out.LowexpTarget <- NULL;
-### if duplicated exists.
+### If duplicated exists:
 for ( i in 1:nrow(sec.prism.f)){
     identical (row.names(sec.prism.f)  , DrugTargetSim[,1])
     DRS=as.data.frame(sec.prism.f[i,])
     DRS <- t(DRS)
     row.names(DRS) <- row.names(sec.prism.f)[i]
-    ## for mutant
+    ## For mutant:
     MutantInteract <- DoInteractMutant (Predtargets=DrugTargetSim[i,],Mutant=d.mt,DRS=DRS,GES=KO.GES)
-    ## assign the estimate as strength, and P val from the interaction model.
+    ## Assign the estimate as the strength and use the P value from the interaction model:
     TargetMutSpecificity <- data.frame(MaxTgt_Inter_Mut_strength=sapply(MutantInteract, function(x) x[1]), MaxTgt_Inter_Mut_Pval=sapply(MutantInteract, function(x) x[2]))
     out.MutantTarget <- rbind (out.MutantTarget,TargetMutSpecificity)
-    ## for expression.
+    ## For expression:
     ExpInteract <- DoInteractExp (DrugTargetSim[i,],d.expr,DRS=DRS,GES=KO.GES,CutOff = 2)
-    ## assign the estimate as strength, and P val from the interaction model.
+    ## Assign the estimate as the strength and use the P value from the interaction model.
     TargetExpSpecificity <- data.frame(MaxTgt_Inter_Exp_strength=sapply(ExpInteract, function(x) x[1]), MaxTgt_Inter_Exp_Pval=sapply(ExpInteract, function(x) x[2]))
     out.LowexpTarget <- rbind ( out.LowexpTarget,TargetExpSpecificity)
 }
 
 identical ( DrugTargetSim[,1],DrugGeneMaxSim[,1])
 
-## whether interaction is true or false based on cut-off. estimate and p val from lm model
+## Check whether the interaction is true or false based on a cut-off. Estimate and p value come from lm model
 Whether_interaction_Ex_based= ifelse ( out.LowexpTarget$MaxTgt_Inter_Exp_strength <0 & out.LowexpTarget$MaxTgt_Inter_Exp_Pval <0.2,TRUE,FALSE)
-## mutation interaction with P <0.1
+## Mutation interaction with P <0.1
 predicted_resistance_mutation = ifelse ( out.MutantTarget$MaxTgt_Inter_Mut_Pval<0.1,TRUE,FALSE)
-### if desired, save how many cellline has low expresion.
+### If desired, save how many cell lines have low expresion:
 Pred.d <- cbind ( DrugTargetSim,DrugGeneMaxSim,out.MutantTarget,predicted_resistance_mutation, out.LowexpTarget,Whether_interaction_Ex_based)
 
 Low.Exp = sapply(Pred.d[,3],function(x)errHandle(sum(d.expr[x,] < 2)) )
-## save for later.
+## Save this for later:
 Pred.d$lowExpCount<-Low.Exp
 ##
 ### Obtain the similarity between the viablity scores from drug targeted treatment
 ## vs Gene effect score from KO method for the group that don't have primary targeted express.
-## pred column 3.
-## only use the rows with no NA.
+## Prediction is in column 3.
+## Only use the rows with no NA values.
 idx <- which ( Pred.d$lowExpCount>0)
 Pred.d.f <- Pred.d[idx ,]
 Low.Exp.G = sapply(Pred.d.f[,3], function(x) errHandle(names(which(d.expr[x,]<2))))
 identical ( names(Low.Exp.G),Pred.d.f[,3] )
-## only perform the gene has at least some celllines having low exp
+## Only perform the test if the gene has at least some cell lines with low expression.
 
 sim.LowExp <- NULL;
 sec.prism.f.f <- sec.prism.f[idx,]
@@ -109,23 +109,22 @@ names(sim.LowExp) <-Pred.d.f[,1]
 saveRDS(sim.LowExp,
         file = 'Result/similarity_KO_LowExp_DrugTreatment.RDS')
 
-### plot and show the top 5 genes having the most corelation with drug when the primary is not expressed.
-## make the function and use the sub function from dr. hu.
+### Plot and show the top 5 genes that have the best correlation with the drug when the primary target is not expressed.
 
 sim.LowExp.Strength=sapply(sim.LowExp, function(x) x[,2])
 head(sim.LowExp.Strength)
 sim.LowExp.Pval=sapply(sim.LowExp, function(x) x[,1])
 head(sim.LowExp.Pval)
 dim(sim.LowExp.Strength)
-## we should create a rdata save it in the data folder if we can't create a good dummy file as the output.
-## depending on whehter we can add more data in the pacakge.
+## We should create an rdata save it in the data folder if we can't create a good dummy file as the output.
+## depending on whether we can add more data in the pacakge.
 ## the best is to save both similary for all and for low.
-pdf ("Result/sim.low.exp.plot.pdf")
+pdf("Result/sim.low.exp.plot.pdf")
 par(mar=c(4,4,5,2), xpd=TRUE, mfrow=c(2,2));
 plotSim (dx=sim.LowExp.Pval,dy=sim.LowExp.Strength,clr=colorRampPalette(c("lightblue",'darkblue')), plot=TRUE)
 dev.off();
 
-## rcord these top 5 genes to the pred object.
+## Record the top 5 genes to the pred object.
 
 L.topG <- NULL;
 for ( i in 1:ncol(sim.LowExp.Strength)){
@@ -149,7 +148,6 @@ for ( i in 1:ncol(simExp.Strength)){
 
 Pred.d$top5Gene_Ex <- H.topG
 
-##
 write.csv (Pred.d,"./Result/Prediction_sim_KO_DrugTreatment.csv" )
 ## let plot for mutation =TRUE
 
@@ -157,11 +155,11 @@ write.csv (Pred.d,"./Result/Prediction_sim_KO_DrugTreatment.csv" )
 DOI = 'dabrafenib'
 GOI ='BRAF'
 head(Pred.d)
-## the first two cols is the drugs having two assays.
-## we know that sec.prism.f has the same order with Pred.d.
+## The first two columns are the drugs having two assays.
+## We know that sec.prism.f has the same order as Pred.d.
 which.mut <- which (Pred.d$predicted_resistance_mutation==TRUE);
-## plot mutant.
-## preaparing data
+## Plot mutants:
+### Preparing data:
 for ( i in 1:length(which.mut)){
     cr.i <- which.mut[i]
     DOI = Pred.d[cr.i,2]
@@ -176,7 +174,7 @@ for ( i in 1:length(which.mut)){
     dev.off();
 }
 
-## primary targeted.
+## Primary targets:
 which.exp <- which (Pred.d$Whether_interaction_Ex_based==FALSE);
 for ( i in 1:length(which.exp )){
     cr.i <- which.exp[i]
@@ -193,7 +191,7 @@ for ( i in 1:length(which.exp )){
     dev.off();
 }
 
-# based on the secondary targeted.
+## Based on the secondary targets:
 which.exp <- which (Pred.d$Whether_interaction_Ex_based==FALSE);
 dim(Pred.d)
 for ( i in 1:length(which.exp )){
@@ -209,7 +207,7 @@ for ( i in 1:length(which.exp )){
     print (out)
     dev.off();
 }
-### plot the correlation for the predited target.
+## Plot the correlation for the predited target.
 DOI = 'atiprimod'
 GOI = 'SOX10'
 #GOI = 'MITF'
