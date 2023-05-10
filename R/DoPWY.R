@@ -1,4 +1,4 @@
-## this is the pathwya analysis based on the information from the drug such as moa pahtwyas and genes targeted.s
+## This is the pathway analysis based on the information from the drug such as MOA pathways and genes targeted.
 DoPWY <- function(Sim.GES.DRS=Sim.GES.DRS, D.M = Drug.Metadata){
   PwyTargeted=split(D.M[,3], D.M[,5])
   PwyTargeted.unl=sapply(PwyTargeted, unlist)
