@@ -2,10 +2,10 @@
 \alias{errHandle}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Custom Error handling
+Custom Error handling function
 }
 \description{
-The err_handle() function is a simple function that tries to evaluate an expression x, and if an error occurs it returns NA instead. This is known as error handling, and it allows the code to continue running even if an error is encountered.
+A utility function that tries to evaluate an expression x and returns NA if an error occurs. This allows the code to continue running even if an error is encountered.
 }
 \usage{
 errHandle(x)
@@ -30,7 +30,7 @@ errHandle(x)
 %% ~put references to the literature/web site here ~
 }
 \author{
-%%  ~~who you are~~
+sanjusinha7
 }
 \note{
 %%  ~~further notes~~
@@ -42,10 +42,6 @@ errHandle(x)
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
 ## The function is currently defined as
 function (x)
 {
@@ -56,8 +52,8 @@ function (x)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory (show via RShowDoc("KEYWORDS")):
-% \keyword{ ~kwd1 }
-% \keyword{ ~kwd2 }
+\keyword{ utilities }
+\keyword{ internal }
 % Use only one keyword per line.
 % For non-standard keywords, use \concept instead of \keyword:
 % \concept{ ~cpt1 }
