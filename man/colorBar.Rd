@@ -110,6 +110,8 @@ function (xl, yb, xr, yt, v.min, v.max, col.l, alpha = 1, color.spec = "hsv",
 % R documentation directory (show via RShowDoc("KEYWORDS")):
 \keyword{ aplot }
 \keyword{ color }
+\keyword{ utilities }
+\keyword{ internal }
 % Use only one keyword per line.
 % For non-standard keywords, use \concept instead of \keyword:
 % \concept{ ~cpt1 }
