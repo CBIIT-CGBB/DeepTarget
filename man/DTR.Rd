@@ -2,13 +2,13 @@
 \alias{DTR}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-plotting for Drug target response for primary or secondary.
+Plot of drug target response for primary or secondary targets.
 }
 \description{
-plotting for Drug target response for primary or secondary based on drug of interest and gene of interest.
+Generates a plot of drug target response for primary or secondary targets based on a drug of interest and a gene of interest.
 }
 \usage{
-DTR(DN = DOI, GN = GOI, Pred = Pred, Exp = Exp, DRS = DRS, GES = GES, CutOff= 3,plot = TRUE)
+DTR(DN = DOI, GN = GOI, Pred = Pred, Exp = Exp, DRS = DRS, GES = GES, CutOff = 3,plot = TRUE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -31,10 +31,10 @@ Drug response matrix
 Gene Effect Scores
 }
   \item{plot}{
-whether users want to plot, default is true
+Whether users want to plot, default is true
 }
   \item{CutOff}{
-cutoff value for gene expression of GOI high or low
+Cutoff value for gene expression of gene of interest, high or low
 }
 }
 \details{
@@ -77,4 +77,5 @@ GOI ='BTK'
 DTR ( DN=DOI,GN=GOI,Pred=Pred.d, Exp=d.expr,DRS= sec.prism,GES= KO.GES,CutOff= 2)
 
 }
-
+\keyword{ aplot }
+\keyword{ regression }
