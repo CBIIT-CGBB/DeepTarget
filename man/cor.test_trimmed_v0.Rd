@@ -56,7 +56,7 @@ UseMethod("cor.test_trimmed_v0")
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory (show via RShowDoc("KEYWORDS")):
 \keyword{ htest }
-% \keyword{ ~kwd2 }
+\keyword{ utilities }
 % Use only one keyword per line.
 % For non-standard keywords, use \concept instead of \keyword:
 % \concept{ ~cpt1 }
