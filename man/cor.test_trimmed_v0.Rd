@@ -2,10 +2,10 @@
 \alias{cor.test_trimmed_v0}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Trimmed cor test that is faster than standard cor.test
+A faster trimmed correlation test
 }
 \description{
-Calculation the corelation. This will be called inside other funciton such as Getsim{}
+A utility method to calculate the correlation in a faster method than the standard built in. This will be called inside other funciton such as Getsim{}
 }
 \usage{
 cor.test_trimmed_v0(x, ...)
@@ -55,7 +55,7 @@ UseMethod("cor.test_trimmed_v0")
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory (show via RShowDoc("KEYWORDS")):
-% \keyword{ ~kwd1 }
+\keyword{ htest }
 % \keyword{ ~kwd2 }
 % Use only one keyword per line.
 % For non-standard keywords, use \concept instead of \keyword:
