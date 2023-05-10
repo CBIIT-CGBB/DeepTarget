@@ -1,4 +1,4 @@
-## plot the similarity based on corelation vals and p val.
+## Plot the similarity based on correlation values and p values.
 
 plotSim <- function(dx=d.Pval,dy=d.corr,clr=NULL, plot=TRUE){
     if (is.null(clr)){ clr=colorRampPalette(c("lightblue",'darkblue'))}
@@ -20,6 +20,6 @@ plotSim <- function(dx=d.Pval,dy=d.corr,clr=NULL, plot=TRUE){
                 colorBar(x1, y1, x2, y2, col.l=clr(100), v.min=min(y), v.max=max(y));
             }
         }else{
-            stop("Please check the data")}
+            stop("Error encountered, please check the data.")}
     }
 }
