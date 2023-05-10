@@ -2,11 +2,11 @@
 \alias{PredMaxSim}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
- Predict the gene having the most similarity across all genes
+ Predict the most similar gene to the drug response
 }
 \description{
 
-Predict the gene having the most similarity associated with drug’s response scores across all genes.
+Predicts the gene that has the most similarity associated with drug’s response scores from the set of all genes.
 
 }
 \usage{
@@ -14,18 +14,18 @@ PredMaxSim (Sim.GES.DRS = Sim.GES.DRS, D.M = Drug.Metadata)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{Sim.GES.DRS}{
- similarity between Drug’s response scores and Gene effect scores from Knock-out method such as CRISPR.
+\item{Sim.GES.DRS}{
+Similarity between Drug’s response scores and Gene effect scores from Knock-out method such as CRISPR.
 }
-  \item{D.M}{
-      Drug Metadata
+\item{D.M}{
+Drug Metadata
 }
 }
 \details{
 %%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-a table of drug information and the most correlated gene across all genes.
+A table of drug information and the most correlated gene across all genes.
 }
 \references{
 %% ~put references to the literature/web site here ~
@@ -56,8 +56,8 @@ Drug.Gene.max.sim <- PredMaxSim(Sim.GES.DRS=sim, D.M = Meta.data)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory (show via RShowDoc("KEYWORDS")):
-% \keyword{ ~kwd1 }
-% \keyword{ ~kwd2 }
+\keyword{ methods }
+\keyword{ manip }
 % Use only one keyword per line.
 % For non-standard keywords, use \concept instead of \keyword:
 % \concept{ ~cpt1 }
