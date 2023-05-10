@@ -2,20 +2,19 @@
 \alias{PredTarget}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Prediction the most similarity across the known targeted genes.
+Prediction  of the most similar known targeted gene.
 }
 \description{
-Predict the gene having the most similarity associated with drug’s response scores across targeted genes
+Predicts the gene that has the most similarity to a drug’s response scores across targeted genes
 }
 
 \usage{
-
-PredTarget(Sim.GES.DRS=sim, D.M = Drug.Metadata)
+PredTarget(Sim.GES.DRS = sim, D.M = Drug.Metadata)
 }
 
 \arguments{
   \item{Sim.GES.DRS}{
-    similarity between Drug’s response scores and Gene effect scores from Knock-out method such as CRISPR.
+    Similarity between a drug’s response scores and gene effect scores from Knock-out method such as CRISPR.
 }
   \item{D.M}{
    Drug Metadata
@@ -25,7 +24,7 @@ PredTarget(Sim.GES.DRS=sim, D.M = Drug.Metadata)
 %%  ~~ If necessary, more details than the description above ~~
 }
 \value{
-a table of drug information and their most targeted gene with stats of correlation.
+A table of drug information and their most targeted gene with stats of correlation.
 }
 \references{
 %% ~put references to the literature/web site here ~
@@ -54,3 +53,5 @@ names(sim) <- S.Drugs
 Meta.data <- OntargetM$DrugMetadata
 DrugTargetSim <- PredTarget(sim,Meta.data)
 }
+\keyword{ methods }
+\keyword{ manip }
