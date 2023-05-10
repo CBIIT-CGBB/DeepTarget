@@ -2,21 +2,25 @@
 \alias{DoInteractMutant}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Compute interaction between the drug and KO expression in term of mutant vs non-mutant
+Compute interaction between the drug and KO expression
 }
 \description{
-Compute interaction between the drug and KO expression in term of mutant vs non-mutant
+Computes the interaction between the drug and KO expression in terms of mutant vs non-mutant.
 }
 \usage{
 
-DoInteractMutant(Predtargets=Drug.targeted.sim,Mutant=Mutant,DRS=DRS, GES=GES)
+DoInteractMutant(Predtargets = Drug.targeted.sim, Mutant = Mutant, DRS = DRS, GES = GES)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
- \item{Predtargets}{a table of drug information and their most targeted gene with stats of correlation}
-\item{Mutant}{Mutant matrix}
-\item{DRS}{Drug scores}
-\item{GES}{Gene effect scores from KO method}
+ \item{Predtargets}{
+  A table of drug information and their most targeted gene with stats of correlation}
+\item{Mutant}{
+ Mutant matrix}
+\item{DRS}{
+ Drug scores}
+\item{GES}{
+ Gene effect scores from KO method}
 }
 \details{
 %%  ~~ If necessary, more details than the description above ~~
@@ -25,7 +29,7 @@ DoInteractMutant(Predtargets=Drug.targeted.sim,Mutant=Mutant,DRS=DRS, GES=GES)
 A list of drug names with their interaction values from two groups mutant and non-mutant
     \item{drug1 }{interaction with estimate and P vals}
     \item{drug2 }{interaction with estimate and P vals}
-     \item{drugN }{interaction with estimate and P vals}
+    \item{drugN }{interaction with estimate and P vals}
      }
 
 \references{
@@ -59,7 +63,7 @@ MutantInteract <- DoInteractMutant (Predtargets=DrugTargetSim,Mutant=d.mt,DRS=se
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory (show via RShowDoc("KEYWORDS")):
-% \keyword{ ~kwd1 }
+\keyword{ manip }
 % \keyword{ ~kwd2 }
 % Use only one keyword per line.
 % For non-standard keywords, use \concept instead of \keyword:
