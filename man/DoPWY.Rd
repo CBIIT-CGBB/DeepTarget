@@ -2,13 +2,13 @@
 \alias{DoPWY}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Provide a score for each pathway to be the MOA of a drug
+Provide a probability score for each pathway to be the MOA of a drug
 }
 \description{
 Predicts a Primary Target at a pathwya Level. It next finds the pathways that are most enriched in the genes with high DKS scores. It does this by performing a pathway enrichment test on the ranked gene list by DKS score. The output is a matrix of pathway-level probabilities for each drug to be the primary MOA
 }
 \usage{
-DoPWY(Sim.GES.DRS=Sim.GES.DRS, D.M = Drug.Metadata)
+DoPWY(Sim.GES.DRS = Sim.GES.DRS, D.M = Drug.Metadata)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -59,8 +59,9 @@ Pwy.Enr <- DoPWY(Sim.GES.DRS=sim,D.M = Meta.data)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory (show via RShowDoc("KEYWORDS")):
-% \keyword{ ~kwd1 }
-% \keyword{ ~kwd2 }
+\keyword{ manip }
+\keyword{ distribution }
+\keyword{ methods }
 % Use only one keyword per line.
 % For non-standard keywords, use \concept instead of \keyword:
 % \concept{ ~cpt1 }
