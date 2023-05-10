@@ -1,10 +1,10 @@
 \name{line2user}
 \alias{line2user}
 \title{
-This function is used with colorBar function to create color bar placed in top middle of a plot.
+A utility function to correctly place the colorBar.
 }
 \description{
-This function is used with colorBar function to create color bar placed in top middle of a plot.
+This function is used in conjunction with the colorBar function to create color bar placed in top middle of a plot.
 }
 \usage{
 line2user(line, side)
@@ -44,10 +44,6 @@ Ying Hu <yhu@mail.nih.gov>
 %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
 ## The function is currently defined as
 function (line, side)
 {
@@ -62,8 +58,9 @@ function (line, side)
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory (show via RShowDoc("KEYWORDS")):
-% \keyword{ ~kwd1 }
-% \keyword{ ~kwd2 }
+\keyword{ utilities }
+\keyword{ internal }
+\keyword{ aplot }
 % Use only one keyword per line.
 % For non-standard keywords, use \concept instead of \keyword:
 % \concept{ ~cpt1 }
