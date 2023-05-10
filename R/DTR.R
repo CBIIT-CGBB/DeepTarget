@@ -24,7 +24,7 @@ DTR <- function(DN=DOI,GN=GOI,Pred=Pred,Exp=Exp,DRS= DRS,GES= GES,CutOff= 3,plot
             stat_cor(label.y = c(1.3,1.4))
         }
         }else{
-            stop("The drug of interest is not existing. Please double check with target prediction output")
+            stop("The drug of interest does not exist. Please double-check with target prediction output.")
         }
     }
 
