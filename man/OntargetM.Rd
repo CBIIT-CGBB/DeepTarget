@@ -27,7 +27,7 @@ avana_CRISPR: please download full data from this link \url{https://depmap.org/p
 
 mutations_mat:  Please download full data from this link \url{https://depmap.org/portal/download/all/?releasename=DepMap+Public+22Q4&filename=OmicsSomaticMutations.csv}
 
-expression_20Q4: Please download full data of file named OmicsExpressionProteinCodingGenesTPMLogp1.csv from this link \url{https://depmap.org/portal/download/all/}
+expression_20Q4: Please download full data of file named "CCLE_expression.csv" from this link \url{https://depmap.org/portal/download/all/}
 
 }
 \examples{

@@ -15,7 +15,7 @@ DMB <- function(DrugName,GOI,Pred,Mutant,DRS,GES,plot=TRUE){
             Mutant.c <- colcode
             dat.c <- data.frame(GES.c,DRS.c,Mutant.c)
             ggplot(dat.c,
-                   aes(x = GES.c, y = DRS.c, color = factor(dat.c$Mutant.c)))+
+                aes(x = GES.c, y = DRS.c, color = factor(dat.c$Mutant.c)))+
                 stat_smooth(method = 'lm')+
                 theme_bw(base_size = 15)+
                 labs(

@@ -19,7 +19,7 @@ plotSim <- function(dx,dy,clr=NULL, plot=TRUE){
                     ylab= paste0("correlation strength ",colnames(dx)[i]));
                 text(x[top.5],  y [top.5],  top.5,cex=0.65, pos=2.8,col="black")
                 colorBar(x1, y1, x2, y2, v.min=min(y),
-                         v.max=max(y),col.l=clr(100))
+                    v.max=max(y),col.l=clr(100))
             }
         }else{
             stop("the dimension of input is not the same, please double check")}

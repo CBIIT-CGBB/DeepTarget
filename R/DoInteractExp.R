@@ -10,10 +10,10 @@ DoInteractExp <- function(Predtargets,Exp,DRS,GES,CutOff=3 ){
     GES.f <- tryCatch(GES[Predtargets[x,3],CL.M],error=function(e){NA})
     ## Groups based on the cut-off gene expression
     Exp.Group <- tryCatch(Exp[Predtargets[x,3],CL.M]< CutOff,
-                          error=function(e){NA})
+        error=function(e){NA})
     ## True is low, False is high.
     tryCatch(summary(lm(DRS.f ~ GES.f * Exp.Group))$coefficients[4,c(1,4)],
-             error=function(e){NA})})
+        error=function(e){NA})})
     names(interactFeatures) <- Predtargets$drugName
     interactFeatures
 }

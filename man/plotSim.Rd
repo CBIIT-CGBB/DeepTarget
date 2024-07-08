@@ -29,8 +29,8 @@ KO.GES <- OntargetM$avana_CRISPR
 sec.prism <- OntargetM$secondary_prism
 sim.out <- bplapply(Sample.Drugs,function(x) computeCor(x,sec.prism,KO.GES))
 names(sim.out) <- Sample.Drugs
-P.Values=sapply(sim.out, function(x) x[,1])
-estimate.cor.values=sapply(sim.out, function(x) x[,2])
+P.Values=vapply(sim.out, function(x) x[,1],FUN.VALUE=numeric(nrow(sim.out[[1]])))
+estimate.cor.values=vapply(sim.out, function(x) x[,2],FUN.VALUE=numeric(nrow(sim.out[[1]])))
 par(mar=c(4,4,5,2), xpd=TRUE, mfrow=c(3,3));
 plotSim(dx=P.Values,dy=estimate.cor.values);
 }

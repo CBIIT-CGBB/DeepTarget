@@ -27,11 +27,11 @@ PredMaxSim <- function(Sim.GES.DRS,D.M){
     ## map to get the P val from best target gene
     Pred.sim$BestTargetCorrP <- vapply(seq_len(nrow(Pred.sim)), function(x)
     tryCatch(corrMatPval[Pred.sim[x,'BestTargetGene'], Pred.sim[x,1]], 
-             error=function(e){NA}),numeric(1))
+        error=function(e){NA}),numeric(1))
     ## Best Hit Significance - FDR corrected
     Pred.sim$BestTargetCorrFDR <- vapply(seq_len(nrow(Pred.sim)),function(x) 
         tryCatch(corrMatFDR[Pred.sim[x,'BestTargetGene'], Pred.sim[x,1]],
-                 error=function(e){NA}), numeric(1))
+            error=function(e){NA}), numeric(1))
     Pred.sim
 }
 

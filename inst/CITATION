@@ -5,6 +5,7 @@ citEntry(entry = "article",
   title = "Deep characterization of cancer drugs mechanism of action by integrating large-scale genetic and drug screens",
   journal="bioRxiv preprint",
   year="2022",
+  doi="https://doi.org/10.1101/2022.10.17.512424",
   publisher="Cold Spring Harbor Laboratory",
   url = "https://www.biorxiv.org/content/early/2022/10/19/2022.10.17.512424",
   textVersion = "Sinha, A., Sinha, N., and Ruppin, E (2022). Deep characterization of cancer drugs mechanism of action by integrating large-scale genetic and drug screens.bioRxiv preprint."

@@ -20,7 +20,7 @@ PredTarget <- function(Sim.GES.DRS,D.M){
     if ( nrow(D.M.f)==1){
         ## Catch potential error of returning -Inf
         Target.Max.cor <- tryCatch(max(Stat.Drug,na.rm=TRUE ),
-                                   error=function(e){NA})
+            error=function(e){NA})
         Target.Max.Name <- names(Stat.Drug)[which.max(Stat.Drug)]
         ## drug Id will be the same as the metadata.
         Drug.id <- names(Sim.GES.DRS)
@@ -28,12 +28,12 @@ PredTarget <- function(Sim.GES.DRS,D.M){
     }else{
         names(Stat.Drug) <- as.character(D.M.f[,2])
         Target.Max.cor <- vapply(Stat.Drug,
-                                 function(x) max(x, na.rm=TRUE),numeric(1))
+            function(x) max(x, na.rm=TRUE),numeric(1))
         Target.Max.Name <- vapply(Stat.Drug,
-                                  function(x) names(which.max(x)),character(1))
+            function(x) names(which.max(x)),character(1))
         Drug.id <- D.M.f[match(names(Target.Max.cor), D.M.f$name),1]
     }
-    Target.Max.Name[sapply(Target.Max.Name, length)==0] <- NA
+    Target.Max.Name[vapply(Target.Max.Name, length,FUN.VALUE =numeric(1))==0] <- NA
     ## Obtain drug ID and make sure that we map the correct one
     Target.Pred <- data.frame(
         DrugID = Drug.id,
@@ -43,11 +43,11 @@ PredTarget <- function(Sim.GES.DRS,D.M){
     ## Pull out p val and FDR.
     Target.Pred$KnownTargetCorrP <- vapply(seq_len(nrow(Target.Pred)), function(x)
         tryCatch(corrMatPval[Target.Pred[x,3], Target.Pred[x,1]],
-                 error=function(e){NA}),FUN.VALUE = numeric(1))
+        error=function(e){NA}),FUN.VALUE = numeric(1))
     # Known Target Significance - FDR corrected
     Target.Pred$KnownTargetCorrFDR <- vapply(seq_len(nrow(Target.Pred)), function(x)
         tryCatch(corrMatFDR[Target.Pred[x,3], Target.Pred[x,1]],
-                 error=function(e){NA}),FUN.VALUE = numeric(1))
+        error=function(e){NA}),FUN.VALUE = numeric(1))
     Target.Pred
 }
 

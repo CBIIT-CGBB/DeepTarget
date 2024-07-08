@@ -10,7 +10,7 @@ DoInteractMutant <- function(Predtargets,Mutant,DRS,GES){
             DRS.f <- tryCatch(DRS[Predtargets[x,1],CL.M],error=function(e){NA})
             ## Gene effect scores (GES) based on the targeted gene
             GES.f <- tryCatch(GES[Predtargets[x,3],CL.M],
-                              error=function(e){NA})
+                error=function(e){NA})
             Mutant.Group <- tryCatch(Mutant[Predtargets[x,3],CL.M] )
             ## True is low, False is high.
             tryCatch(summary(

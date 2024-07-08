@@ -3,23 +3,18 @@
 `DeepTarget` performs deep characterization of cancer drugs mechanism of action by integrating large-scale genetic and drug screens from the Cancer Dependency Map project run by the Broad Institute (depmap.org)  and aims to find drug's primary target(s), predict whether the drug specifically targets the wild-type or mutated target forms, and predict the secondary target(s) that mediate its response when the primary target is not expressed.
 
 ## Installation
-### GitHub installation
-You can install the development version of DeepTarget from [GitHub](https://github.com/) with:
-
+To install depmap, the BiocManager Bioconductor Project Package Manager is required. If BiocManager is not already installed, it will need to be done so beforehand with (within R) install.packages("BiocManager"). Once it is installed, DeepTarget can be installed from Biocondctor:
 ``` r
-# install.packages("devtools")
-devtools::install_github("CBIIT-CGBB/DeepTarget")
-```
-
-### Bioconductor installation
-In order to install the package from Bioconductor, make sure
-`BiocManager` is installed and then install the package
-`DeepTarget`:
-``` r
-if (!require("BiocManager", quietly = TRUE))
-    install.packages("BiocManager")
+install.packages("BiocManager")
 BiocManager::install("DeepTarget")
 ```
+### To install the version from GitHub, use
+
+``` r
+install.packages("BiocManager")
+BiocManager::install("CBIIT-CGBB/DeepTarget")
+```
+
 ## Example
 
 Please refer to the file named DeepTarget_Vignette.Rmd in the directory vignettes for a demonstration of how the package can be used.
