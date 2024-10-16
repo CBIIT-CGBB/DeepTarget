@@ -1,7 +1,7 @@
 Package: DeepTarget
 Type: Package
 Title: Deep characterization of cancer drugs 
-Version: 0.99.21
+Version: 0.99.22
 Authors@R: c(
     person("Sanju", "Sinha", email = "sanju@terpmail.umd.edu", role ="aut"),
     person("Trinh", "Nguyen", email = "tinh.nguyen@nih.gov", role = c("aut","cre"),comment=c(ORCID="0000-0002-6606-6948")),
