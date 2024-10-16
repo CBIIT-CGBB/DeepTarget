@@ -1,12 +1,12 @@
 Package: DeepTarget
 Type: Package
 Title: Deep characterization of cancer drugs 
-Version: 0.99.20
+Version: 0.99.21
 Authors@R: c(
     person("Sanju", "Sinha", email = "sanju@terpmail.umd.edu", role ="aut"),
     person("Trinh", "Nguyen", email = "tinh.nguyen@nih.gov", role = c("aut","cre"),comment=c(ORCID="0000-0002-6606-6948")),
     person("Ying", "Hu", email = "yhu@mail.nih.gov", role ="aut"))
-Description: This package predicts a drug’s primary target(s) or secondary target(s) by integrating large-scale genetic and drug screens from the Cancer Dependency Map project run by the Broad Institute. It further investigates whether the drug specifically targets the wild-type or mutated target forms. To show how to use this package in practice, we provided sample data along with step-by-step example. We also guided how to interpret the result.The user of this package is required to agree to the terms and conditions of DepMap portal (https://depmap.org/portal/).  Some of these terms and conditions are problematic for U.S. Federal Government employees, and they should consult their technology transfer office/legal office before agreeing to such terms and conditions.
+Description: This package predicts a drug’s primary target(s) or secondary target(s) by integrating large-scale genetic and drug screens from the Cancer Dependency Map project run by the Broad Institute. It further investigates whether the drug specifically targets the wild-type or mutated target forms. To show how to use this package in practice, we provided sample data along with step-by-step example.
 License: GPL-2
 Encoding: UTF-8
 biocViews: GeneTarget, GenePrediction,Pathways, GeneExpression, RNASeq, ImmunoOncology,DifferentialExpression, GeneSetEnrichment, ReportWriting,CRISPR
