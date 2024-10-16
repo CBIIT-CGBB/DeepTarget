@@ -10,11 +10,14 @@ DoPWY <- function(Sim.GES.DRS,D.M){
     F.V <- nrow(Sim.GES.DRS[[1]])
     corrMat <- vapply(Sim.GES.DRS, function(x) x[,2],numeric(F.V))
     DoPWYEnr <- bplapply(seq_len(ncol(corrMat)), function(x) {
-        corrMat.u <- unlist(corrMat[,x])
-        names(corrMat.u) <- rownames(corrMat)
-        corrMat.u.O <- sort(corrMat.u, decreasing = TRUE)
+        corrMat.ul <- unlist(corrMat[,x])
+        names(corrMat.ul) <- rownames(corrMat)
+        corrMat.ul.s <- sort(corrMat.ul, decreasing = TRUE)
+        corrMat.ul.s <- as.matrix(corrMat.ul.s)
+        ## remove the duplicated gene if having
+        corrMat.ul.s.u <- corrMat.ul.s[!duplicated(row.names(corrMat.ul.s)),]
         gseaEnr <- fgsea(
-            pathways = PwyTargeted.c,stats = corrMat.u.O,minSize=1,maxSize=100)
+            pathways = PwyTargeted.c,stats = corrMat.ul.s.u,minSize=1,maxSize=100)
         gseaEnr})
     names(DoPWYEnr) <- colnames(corrMat)
     DoPWYEnr
