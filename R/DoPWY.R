@@ -16,7 +16,8 @@ DoPWY <- function(Sim.GES.DRS,D.M){
         corrMat.ul.s <- as.matrix(corrMat.ul.s)
         ## remove the duplicated gene if having
         corrMat.ul.s.u <- corrMat.ul.s[!duplicated(row.names(corrMat.ul.s)),]
-	## resolve build error of bioparallel on window server?	BiocParallel::register(SerialParam())
+	## resolve build error of bioparallel on window server?
+	BiocParallel::register(SerialParam())
         gseaEnr <- fgsea(
             pathways = PwyTargeted.c,stats = corrMat.ul.s.u,minSize=1,maxSize=100)
         gseaEnr})
